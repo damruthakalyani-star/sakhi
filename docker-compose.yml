@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: sakhisahay_mongodb_dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: devpassword123
+      MONGO_INITDB_DATABASE: sakhisahay_dev
+    volumes:
+      - mongo_dev_data:/data/db
+    networks:
+      - sakhisahay_dev_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sakhisahay_backend_dev
+    restart: unless-stopped
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - ./backend/app:/app/app:ro
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=SAKHISAHAY
+      - APP_ENV=development
+      - DEBUG=true
+      - API_V1_PREFIX=/api/v1
+      - SECRET_KEY=dev-secret-key-must-be-at-least-64-characters-long-for-security-check
+      - MONGODB_URI=mongodb://admin:devpassword123@mongodb:27017/sakhisahay_dev?authSource=admin
+      - MONGODB_DB_NAME=sakhisahay_dev
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173
+      - LOG_LEVEL=DEBUG
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - sakhisahay_dev_network
+
+  frontend:
+    image: node:20-alpine
+    container_name: sakhisahay_frontend_dev
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+    depends_on:
+      - backend
+    networks:
+      - sakhisahay_dev_network
+
+volumes:
+  mongo_dev_data:
+    driver: local
+
+networks:
+  sakhisahay_dev_network:
+    driver: bridge

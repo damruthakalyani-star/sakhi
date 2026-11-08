@@ -1,0 +1,264 @@
+{
+  "info": {
+    "name": "SAKHISAHAY API Collection",
+    "description": "Complete Postman collection for all SAKHISAHAY FastAPI endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Signup",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Pooja Sharma\",\n  \"email\": \"pooja@example.com\",\n  \"password\": \"SecurePassword123!\",\n  \"confirm_password\": \"SecurePassword123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/signup"
+          }
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"pooja@example.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/refresh"
+          }
+        },
+        {
+          "name": "Get Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": "{{baseUrl}}/api/v1/auth/me"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": "{{baseUrl}}/api/v1/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Emergency Contacts",
+      "item": [
+        {
+          "name": "List Contacts",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": "{{baseUrl}}/api/v1/contacts"
+          }
+        },
+        {
+          "name": "Create Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Anjali Sharma\",\n  \"phone\": \"9876543210\",\n  \"relationship\": \"Family\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/contacts"
+          }
+        },
+        {
+          "name": "Update Contact",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Anjali Sharma\",\n  \"relationship\": \"Guardian\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/contacts/{{contactId}}"
+          }
+        },
+        {
+          "name": "Delete Contact",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": "{{baseUrl}}/api/v1/contacts/{{contactId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Emergency SOS",
+      "item": [
+        {
+          "name": "Trigger SOS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 12.971598,\n  \"longitude\": 77.594566,\n  \"accuracy\": 10.5,\n  \"message\": \"I need help. Please contact me immediately.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/sos/trigger"
+          }
+        },
+        {
+          "name": "Get Active SOS",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": "{{baseUrl}}/api/v1/sos/active"
+          }
+        },
+        {
+          "name": "Resolve SOS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolution_note\": \"User confirmed safe\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/sos/resolve"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Live Location",
+      "item": [
+        {
+          "name": "Start Location Share",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 12.971598,\n  \"longitude\": 77.594566,\n  \"accuracy\": 15.0,\n  \"duration_minutes\": 60\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/location/share"
+          }
+        },
+        {
+          "name": "View Shared Location (Public)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/location/shared/{{shareToken}}"
+          }
+        },
+        {
+          "name": "Stop Location Sharing",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": "{{baseUrl}}/api/v1/location/share"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Safety Chatbot",
+      "item": [
+        {
+          "name": "Chat Message (English)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What should I do if someone follows me?\",\n  \"language\": \"en\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/chatbot/message"
+          }
+        },
+        {
+          "name": "Chat Message (Kannada)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"ಯಾರಾದರೂ ನನ್ನನ್ನು ಹಿಂಬಾಲಿಸಿದರೆ\",\n  \"language\": \"kn\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/chatbot/message"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health & Operations",
+      "item": [
+        {
+          "name": "Liveness Probe",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/health"
+          }
+        },
+        {
+          "name": "Readiness Probe",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/ready"
+          }
+        },
+        {
+          "name": "Safety Resources",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/safety-resources"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ]
+}
