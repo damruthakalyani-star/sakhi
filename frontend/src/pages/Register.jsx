@@ -90,6 +90,7 @@ function Register() {
       await register({
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
+        confirm_password: formData.confirmPassword,
         full_name: formData.fullName.trim(),
         phone_number: formData.phoneNumber.trim() || null,
       });

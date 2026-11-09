@@ -119,8 +119,9 @@ function SOS() {
           api.get("/sos/active"),
         ]);
 
-        if (contactsRes.status === "fulfilled" && Array.isArray(contactsRes.value)) {
-          setContacts(contactsRes.value);
+        if (contactsRes.status === "fulfilled") {
+          const list = Array.isArray(contactsRes.value) ? contactsRes.value : (contactsRes.value?.items || []);
+          setContacts(list);
         }
         if (activeRes.status === "fulfilled" && activeRes.value) {
           setActiveAlert(activeRes.value);
@@ -406,7 +407,7 @@ function SOS() {
                   <li key={contact.id} className="sos-contact">
                     <span className="sos-contact-name">{contact.name}</span>
                     <span className="sos-contact-meta">
-                      {contact.relationship} • +91 {contact.phone_number}
+                      {contact.relationship} • +91 {contact.phone || contact.phone_number}
                     </span>
                   </li>
                 ))}

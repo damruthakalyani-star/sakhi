@@ -57,6 +57,7 @@ class AuthService:
         user_dict = {
             "email": normalized_email,
             "full_name": data.full_name.strip(),
+            "phone_number": data.phone_number,
             "password_hash": pwd_hash,
             "role": "user",
             "is_active": True,

@@ -117,7 +117,8 @@ function EmergencyContacts() {
     try {
       setLoading(true);
       const data = await api.get("/contacts");
-      setContacts(data || []);
+      const list = Array.isArray(data) ? data : (data?.items || []);
+      setContacts(list);
       setServerError("");
     } catch (err) {
       setServerError("Failed to load contacts: " + err.message);
@@ -193,6 +194,7 @@ function EmergencyContacts() {
 
     const payload = {
       name: formData.name.trim(),
+      phone: formData.phone.trim(),
       phone_number: formData.phone.trim(),
       relationship: formData.relationship,
       is_primary: contacts.length === 0,
@@ -222,7 +224,7 @@ function EmergencyContacts() {
     setEditingId(contact.id);
     setFormData({
       name: contact.name,
-      phone: contact.phone_number,
+      phone: contact.phone || contact.phone_number || "",
       relationship: contact.relationship,
     });
     setErrors({});
@@ -451,7 +453,7 @@ function EmergencyContacts() {
                       </div>
                       <p className="ec-item-phone">
                         <PhoneIcon />
-                        <span>+91 {contact.phone_number}</span>
+                        <span>+91 {contact.phone || contact.phone_number}</span>
                       </p>
                     </div>
 

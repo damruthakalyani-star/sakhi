@@ -2,7 +2,7 @@
 
 import re
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -13,13 +13,17 @@ class ContactBase(BaseModel):
     name: str = Field(
         min_length=2, max_length=100, description="Full name of emergency contact"
     )
-    phone: str = Field(description="10-digit Indian mobile number")
+    phone: str = Field(default="", description="10-digit Indian mobile number")
+    phone_number: str | None = None
     relationship: RelationshipType = Field(description="Relationship to contact")
 
-    @field_validator("phone")
+    @field_validator("phone", mode="before")
     @classmethod
-    def validate_indian_mobile(cls, v: str) -> str:
-        cleaned = re.sub(r"\D", "", v)
+    def validate_indian_mobile(cls, v: Any, info) -> str:
+        raw = v or (info.data.get("phone_number") if hasattr(info, "data") else None)
+        if not raw:
+            raise ValueError("Phone number is required.")
+        cleaned = re.sub(r"\D", "", str(raw))
         if not re.match(r"^[6-9]\d{9}$", cleaned):
             raise ValueError(
                 "Phone number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9."

@@ -393,7 +393,7 @@ function ContactOverview({ contacts, loading }) {
                 <div>
                   <strong>{c.name}</strong>
                   <span style={{ display: "block", fontSize: "0.85rem", color: "#666" }}>
-                    {c.relationship} • {c.phone_number}
+                    {c.relationship} • {c.phone || c.phone_number}
                   </span>
                 </div>
                 {c.is_primary && (
@@ -452,8 +452,9 @@ export default function Dashboard() {
         ]);
 
         if (isMounted) {
-          if (contactsRes.status === "fulfilled" && Array.isArray(contactsRes.value)) {
-            setContacts(contactsRes.value);
+          if (contactsRes.status === "fulfilled") {
+            const list = Array.isArray(contactsRes.value) ? contactsRes.value : (contactsRes.value?.items || []);
+            setContacts(list);
           }
           if (sosRes.status === "fulfilled" && sosRes.value) {
             setActiveSos(sosRes.value);

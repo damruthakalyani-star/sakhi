@@ -28,23 +28,26 @@ class RefreshTokenBody(BaseModel):
 
 
 def set_refresh_cookie(response: Response, refresh_token: str) -> None:
+    is_prod = settings.APP_ENV == "production"
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=settings.APP_ENV == "production",
-        samesite="lax",
+        secure=is_prod,
+        samesite="none" if is_prod else "lax",
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
         path="/api/v1/auth",
     )
 
 
 def clear_refresh_cookie(response: Response) -> None:
+    is_prod = settings.APP_ENV == "production"
     response.delete_cookie(
         key="refresh_token",
         path="/api/v1/auth",
         httponly=True,
-        samesite="lax",
+        secure=is_prod,
+        samesite="none" if is_prod else "lax",
     )
 
 

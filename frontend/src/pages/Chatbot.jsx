@@ -168,7 +168,7 @@ function Chatbot() {
       };
 
       setMessages((prev) => [...prev, botMessage]);
-    } catch (err) {
+    } catch {
       const errorMessage = {
         id: `bot-err-${Date.now()}`,
         sender: "bot",
@@ -191,24 +191,24 @@ function Chatbot() {
   };
 
   return (
-    <div className="cb-page">
-      <header className="cb-header">
-        <div className="cb-header-inner">
-          <Link to="/dashboard" className="cb-back-link">
+    <div className="chatbot-page cb-page">
+      <header className="chatbot-header cb-header">
+        <div className="chatbot-header-inner cb-header-inner">
+          <Link to="/dashboard" className="chatbot-back-link cb-back-link">
             {t.backToDashboard}
           </Link>
-          <div className="cb-lang-switch">
-            <span className="cb-lang-label">{t.languageLabel}:</span>
+          <div className="chatbot-language cb-lang-switch">
+            <span className="chatbot-language-label cb-lang-label">{t.languageLabel}:</span>
             <button
               type="button"
-              className={`cb-lang-btn ${language === "en" ? "is-active" : ""}`}
+              className={`chatbot-lang-btn cb-lang-btn ${language === "en" ? "is-active" : ""}`}
               onClick={() => handleLanguageChange("en")}
             >
               English
             </button>
             <button
               type="button"
-              className={`cb-lang-btn ${language === "kn" ? "is-active" : ""}`}
+              className={`chatbot-lang-btn cb-lang-btn ${language === "kn" ? "is-active" : ""}`}
               onClick={() => handleLanguageChange("kn")}
             >
               ಕನ್ನಡ
@@ -217,41 +217,43 @@ function Chatbot() {
         </div>
       </header>
 
-      <main className="cb-main">
+      <main className="chatbot-main cb-main">
         {/* Real Emergency Notice Banner */}
-        <div className="cb-emergency-banner" role="alert">
-          <span className="cb-alert-icon">⚠️</span>
-          <p>
+        <div className="chatbot-emergency cb-emergency-banner" role="alert">
+          <span className="cb-alert-icon" style={{ marginRight: "0.5rem" }}>⚠️</span>
+          <span>
             {t.emergencyNotice}{" "}
-            <a href="tel:112" style={{ fontWeight: 700, textDecoration: "underline", color: "#fff" }}>
+            <a href="tel:112" style={{ fontWeight: 700, textDecoration: "underline", color: "#880E4F" }}>
               Call 112
             </a>
-          </p>
+          </span>
         </div>
 
-        <section className="cb-chat-card">
-          <div className="cb-chat-header">
-            <h2>{t.chatTitle}</h2>
-            <span className="cb-status-badge">● Online</span>
+        <section className="chatbot-card cb-chat-card">
+          <div className="chatbot-card-header cb-chat-header">
+            <h2 className="chatbot-card-title">{t.chatTitle}</h2>
+            <span className="chatbot-card-tag cb-status-badge">● Online</span>
           </div>
 
-          <div className="cb-messages-area" role="log" aria-live="polite">
+          <div className="chatbot-messages cb-messages-area" role="log" aria-live="polite">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`cb-msg-row ${msg.sender === "user" ? "cb-user-row" : "cb-bot-row"}`}
+                className={`chatbot-row cb-msg-row ${msg.sender === "user" ? "chatbot-row-user cb-user-row" : "chatbot-row-bot cb-bot-row"}`}
               >
-                <div className={`cb-bubble ${msg.sender === "user" ? "cb-user-bubble" : "cb-bot-bubble"}`}>
-                  <div className="cb-bubble-sender">
+                <div className={`chatbot-bubble cb-bubble ${msg.sender === "user" ? "chatbot-bubble-user cb-user-bubble" : "chatbot-bubble-bot cb-bot-bubble"}`}>
+                  <span className="chatbot-sender cb-bubble-sender">
                     {msg.sender === "user" ? t.youName : t.botName}
-                  </div>
-                  <div className="cb-bubble-content" style={{ whiteSpace: "pre-wrap" }}>
+                  </span>
+                  <div className="chatbot-text cb-bubble-content" style={{ whiteSpace: "pre-wrap" }}>
                     {msg.text}
                   </div>
                   {msg.resources && msg.resources.length > 0 && (
-                    <div style={{ marginTop: "0.75rem", borderTop: "1px solid rgba(0,0,0,0.08)", paddingTop: "0.5rem" }}>
-                      <strong style={{ fontSize: "0.8rem", color: "#880E4F" }}>Helplines:</strong>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.3rem" }}>
+                    <div style={{ marginTop: "0.6rem", borderTop: "1px solid rgba(0,0,0,0.08)", paddingTop: "0.4rem" }}>
+                      <strong style={{ fontSize: "0.78rem", color: "#880E4F", display: "block", marginBottom: "0.25rem" }}>
+                        Helplines:
+                      </strong>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
                         {msg.resources.map((res) => (
                           <a
                             key={res.name}
@@ -272,15 +274,18 @@ function Chatbot() {
                       </div>
                     </div>
                   )}
-                  <span className="cb-bubble-time">{msg.timestamp}</span>
+                  <span className="chatbot-time cb-bubble-time">{msg.timestamp}</span>
                 </div>
               </div>
             ))}
 
             {isTyping && (
-              <div className="cb-msg-row cb-bot-row">
-                <div className="cb-bubble cb-bot-bubble cb-typing-bubble">
-                  <span>{t.typing}</span>
+              <div className="chatbot-row chatbot-row-bot cb-msg-row cb-bot-row">
+                <div className="chatbot-bubble chatbot-bubble-bot chatbot-typing cb-bubble cb-bot-bubble">
+                  <span className="chatbot-dot" />
+                  <span className="chatbot-dot" />
+                  <span className="chatbot-dot" />
+                  <span style={{ marginLeft: "6px", fontSize: "0.85rem", color: "#6b6570" }}>{t.typing}</span>
                 </div>
               </div>
             )}
@@ -288,14 +293,14 @@ function Chatbot() {
           </div>
 
           {/* Suggested Quick Questions */}
-          <div className="cb-suggested">
-            <span className="cb-suggested-label">{t.suggestedHeading}:</span>
-            <div className="cb-suggested-chips">
+          <div className="chatbot-suggestions cb-suggested">
+            <h3 className="chatbot-suggestions-heading cb-suggested-label">{t.suggestedHeading}:</h3>
+            <div className="chatbot-suggestions-list cb-suggested-chips">
               {suggestedQuestions.map((q) => (
                 <button
                   key={q.key}
                   type="button"
-                  className="cb-chip"
+                  className="chatbot-chip cb-chip"
                   onClick={() => sendMessage(q.text)}
                   disabled={isTyping}
                 >
@@ -306,11 +311,12 @@ function Chatbot() {
           </div>
 
           {/* Input Form */}
-          <form className="cb-input-form" onSubmit={handleSubmit}>
-            <div className="cb-input-wrap">
+          <form className="chatbot-form cb-input-form" onSubmit={handleSubmit}>
+            <div className="chatbot-input-row cb-input-wrap">
               <input
                 ref={inputRef}
                 type="text"
+                className="chatbot-input"
                 value={inputText}
                 onChange={(e) => {
                   setInputText(e.target.value);
@@ -321,24 +327,25 @@ function Chatbot() {
                 disabled={isTyping}
                 aria-label={t.inputLabel}
               />
-              <span className="cb-char-counter">
+              <button
+                type="submit"
+                className="chatbot-send-btn cb-send-btn"
+                disabled={isTyping || !inputText.trim()}
+              >
+                {t.send}
+              </button>
+            </div>
+            <div className="chatbot-form-footer">
+              {validationError ? (
+                <span className="chatbot-error cb-val-error" role="alert">
+                  {validationError}
+                </span>
+              ) : <span />}
+              <span className={`chatbot-counter cb-char-counter ${inputText.length > MAX_MESSAGE_LENGTH ? "is-over" : ""}`}>
                 {inputText.length}/{MAX_MESSAGE_LENGTH}
               </span>
             </div>
-            <button
-              type="submit"
-              className="cb-send-btn"
-              disabled={isTyping || !inputText.trim()}
-            >
-              {t.send}
-            </button>
           </form>
-
-          {validationError && (
-            <p className="cb-val-error" role="alert">
-              {validationError}
-            </p>
-          )}
         </section>
       </main>
     </div>

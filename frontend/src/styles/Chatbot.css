@@ -290,6 +290,14 @@
   font-size: 0.96rem;
 }
 
+.chatbot-time {
+  display: block;
+  font-size: 0.72rem;
+  margin-top: 6px;
+  opacity: 0.75;
+  text-align: right;
+}
+
 /* ---------- Typing indicator ---------- */
 
 .chatbot-typing {

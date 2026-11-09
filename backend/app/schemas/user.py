@@ -8,16 +8,17 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 class UserBase(BaseModel):
     email: EmailStr
     full_name: str = Field(min_length=2, max_length=100)
+    phone_number: str | None = None
 
 
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=128)
-    confirm_password: str = Field(min_length=8, max_length=128)
+    confirm_password: str | None = Field(default=None, min_length=8, max_length=128)
 
     @field_validator("confirm_password")
     @classmethod
-    def passwords_match(cls, v: str, info) -> str:
-        if "password" in info.data and v != info.data["password"]:
+    def passwords_match(cls, v: str | None, info) -> str | None:
+        if v is not None and "password" in info.data and v != info.data["password"]:
             raise ValueError("Passwords do not match")
         return v
 
